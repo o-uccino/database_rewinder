@@ -64,8 +64,13 @@ module DatabaseRewinder
       end
 
       ar_conn.disable_referential_integrity do
+        if ar_conn.class.name == 'ActiveRecord::ConnectionAdapters::OracleEnhancedAdapter'
+          end_char = ''
+        else
+          end_char = ';'
+        end
         tables.each do |table_name|
-          ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)};"
+          ar_conn.execute "DELETE FROM #{ar_conn.quote_table_name(table_name)}#{end_char}"
         end
       end
     end
